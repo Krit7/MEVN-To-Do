@@ -4,7 +4,7 @@
       <b-container>
         <b-jumbotron
           :header="todo.title"
-          :lead=" 'Date Added:- '+todo.date"
+          :lead=" 'Date Created:- '+todo.date"
           bg-variant="info"
           text-variant="white"
           border-variant="dark"
@@ -12,7 +12,7 @@
           <p>{{todo.description}}</p>
           <p>Priority Level:- {{todo.priority}}</p>
           <b-button variant="primary" v-on:click="editForm = true">Edit</b-button>
-          <b-button variant="danger">Delete</b-button>
+          <b-button variant="danger" v-on:click="onDelete(todo._id)">Delete</b-button>
         </b-jumbotron>
       </b-container>
     </div>
@@ -20,7 +20,7 @@
     <div v-show="editForm">
       <b-container>
         <b-jumbotron :header="todo.title" border-variant="dark">
-          <b-form @update="onUpdate($event)" @cancel="editForm = false">
+          <b-form>
             <b-form-group id="title" label="Title:" label-for="title" description>
               <b-form-input
                 id="title"
@@ -52,8 +52,8 @@
             </div>
 
             <div>
-              <b-button type="update" variant="primary">Update</b-button>
-              <b-button type="cancel" variant="danger">Cancel</b-button>
+              <b-button type="update" @click="onUpdate($event)" variant="primary">Update</b-button>
+              <b-button type="cancel" @click="editForm=false" variant="danger">Cancel</b-button>
             </div>
           </b-form>
         </b-jumbotron>
@@ -67,7 +67,7 @@ import todoAPI from "../services/todoApi";
 export default {
   data() {
     return {
-      todo: null,
+      todo: this.$route.params.id,
       editForm: false
     };
   },
@@ -77,11 +77,15 @@ export default {
       const res = await todoAPI.getTodo(id);
       this.todo = res.data;
     },
-    async onUpdate(evt) {
-        evt.preventDefault();
-        const id = this.$route.params.id;
-        await todoAPI.editTodo(id,this.todo)
-        this.editForm=true
+    onUpdate() {
+      const id = this.$route.params.id;
+      console.log(id);
+      todoAPI.editTodo(id, this.todo);
+      this.editForm = false;
+    },
+    onDelete(todoID) {
+      todoAPI.removeTodo(todoID);
+      this.$router.push('/')
     }
   },
   mounted() {

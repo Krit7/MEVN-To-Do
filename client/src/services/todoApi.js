@@ -14,12 +14,14 @@ export default {
         })
     },
     removeTodo(todoID) {
-        return Api().post('/removetodo', {
+        var link = '/delete/' +todoID
+        return Api().post(link, {
             todoID: todoID
         })
     },
     editTodo(todoID, todo) {
-        var link = '/edittodo' + todoID
+        var link = '/edit/' + todoID
+        console.log(link)
         return Api().post(link, {
             todoID: todoID,
             todo: todo

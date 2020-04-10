@@ -39,14 +39,46 @@ getTodo = (req,res)=>{
 }
 
 //Add todo
-
+addTodo=(req,res)=>{
+    const newTodo=req.body.todo
+    Todo.create(newTodo,(err,addedTodo)=>{
+        if(err){
+            console.log(err)
+        }
+    })
+}
 
 //Delete Todo
+deleteTodo=(req,res)=>{
+    const todoID=req.params.id
+    // const todoID=req.body.todoID
+    Todo.findByIdAndDelete(todoID,(err,deletedTodo)=>{
+        if(err){
+            console.log(err)
+        }
+    })
+}
+
 
 //Edit Todo
+editTodo= (req,res)=>{
+    const todoID=req.params.id
+    // const todoID=req.body.todoID
+    const newTodo=req.body.todo
+    Todo.findByIdAndUpdate(todoID,newTodo,(err,editedTodo)=>{
+        if(err){
+            console.log(err)
+        }else{
+            console.log(editedTodo)
+        }
+    });
+}
 
 
 module.exports = {
     getTodos,
-    getTodo
+    getTodo,
+    editTodo,
+    addTodo,
+    deleteTodo,
 }
